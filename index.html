@@ -10,7 +10,7 @@
     </style>
   </head>
   <body>
-    <canvas id="canvas" width="513" height="350"></canvas>
+    <canvas id="canvas" width="1240" height="1753"></canvas>
     <script type="text/javascript">
       function getParameterByName(name, url) {
         if (!url) url = window.location.href;
@@ -21,68 +21,90 @@
         if (!results[2]) return '';
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
       }
-      const drawMap1 = () => {
+
+      const drawMap = (locationX, locationY, direction) => {
+        const canvas = document.getElementById('canvas');
         if (canvas.getContext) {
-          const canvas = document.getElementById('canvas');
           ctx = canvas.getContext('2d');
 
           const map = new Image();
+          const location = new Image();
+          const arrow = new Image();
 
           map.onload = function () {
-              // draw background image
-              ctx.drawImage(map, 0, 0);
-              // draw the location
-              ctx.fillStyle = "rgba(256, 0, 0, 0.5)";
-              ctx.beginPath();
-              ctx.arc(345, 68, 5, 0, 2*Math.PI);
-              ctx.lineWidth = 2;
-              ctx.strokeStyle = "rgba(256, 0, 0, 1)";
-              ctx.fill();
-              ctx.stroke();
+            // draw background image
+            ctx.drawImage(map, 0, 0);
+            // draw the location ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+            ctx.drawImage(location, 0, 0, 1014, 1146, locationX, locationY, 169, 191);
+            // draw arrow for facing
+            switch (direction) {
+              case 'left':
+                ctx.drawImage(arrow, locationX+20, locationY+165, 50, 50);
+                break;
+              case 'right':
+                ctx.drawImage(arrow, locationX+70, locationY+165, 50, 50);
+                break;
+              case 'down':
+                ctx.drawImage(arrow, locationX+49, locationY+180, 50, 50);
+                break;
+              default:
+
+            }
           };
 
-          map.src = './imgs/350x513_melbourne_inbound.jpg';
+          map.src = './imgs/T1-Qantas-Domestic-(First-Floor).png';
+          location.src = './imgs/YouAreHere.png';
+          switch (direction) {
+            case 'left':
+              arrow.src = './imgs/left-arrow.svg';
+              break;
+            case 'right':
+              arrow.src = './imgs/right-arrow.svg';
+              break;
+            case 'up':
+              arrow.src = './imgs/up-arrow.svg';
+              break;
+            case 'down':
+              arrow.src = './imgs/down-arrow.svg';
+              break;
+            default:
+
+          }
         }
       }
-      const drawMap2 = (x, y) => {
+
+      const noMap = () => {
+        const canvas = document.getElementById('canvas');
         if (canvas.getContext) {
-          const locationX  = x||182;
-          const locationY  = y||302;
-          const canvas = document.getElementById('canvas');
           ctx = canvas.getContext('2d');
 
-          const map = new Image();
+          const noMapPlaceHolder = new Image();
 
-          map.onload = function () {
-              // draw background image
-              ctx.drawImage(map, 0, 0);
-              // draw the location
-              ctx.fillStyle = "rgba(256, 0, 0, 0.5)";
-              ctx.beginPath();
-              ctx.arc(locationX, locationY, 5, 0, 2*Math.PI);
-              ctx.lineWidth = 2;
-              ctx.strokeStyle = "rgba(256, 0, 0, 1)";
-              ctx.fill();
-              ctx.stroke();
+          noMapPlaceHolder.onload = function () {
+            ctx.drawImage(noMapPlaceHolder, 0, 0);
           };
 
-          map.src = './imgs/350x513_melbourne_outbound.jpg';
+          noMapPlaceHolder.src = './imgs/no_map.jpg';
         }
       }
+
       const LoadMap = () => {
         const mapNum = getParameterByName('map');
+        if (!mapNum) {
+          noMap();
+        }
         switch (Number(mapNum)) {
           case 1:
-            drawMap1();
+            drawMap(950, 600, 'down');
             break;
           case 2:
-            drawMap2();
+            drawMap(100, 740, 'right');
             break;
           case 3:
-            drawMap2(167, 176);
+            drawMap(200, 200, 'left');
             break;
           default:
-            drawMap1();
+            noMap();
         }
       }
       LoadMap();
