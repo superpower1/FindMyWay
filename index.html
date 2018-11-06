@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Find your way</title>
+    <style type="text/css">
+        canvas {
+          width: 100%;
+        }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="513" height="350"></canvas>
+    <script type="text/javascript">
+      function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+      }
+      const drawMap1 = () => {
+        if (canvas.getContext) {
+          const canvas = document.getElementById('canvas');
+          ctx = canvas.getContext('2d');
+
+          const map = new Image();
+
+          map.onload = function () {
+              // draw background image
+              ctx.drawImage(map, 0, 0);
+              // draw the location
+              ctx.fillStyle = "rgba(256, 0, 0, 0.5)";
+              ctx.beginPath();
+              ctx.arc(345, 68, 5, 0, 2*Math.PI);
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = "rgba(256, 0, 0, 1)";
+              ctx.fill();
+              ctx.stroke();
+          };
+
+          map.src = './imgs/350x513_melbourne_inbound.jpg';
+        }
+      }
+      const drawMap2 = (x, y) => {
+        if (canvas.getContext) {
+          const locationX  = x||182;
+          const locationY  = y||302;
+          const canvas = document.getElementById('canvas');
+          ctx = canvas.getContext('2d');
+
+          const map = new Image();
+
+          map.onload = function () {
+              // draw background image
+              ctx.drawImage(map, 0, 0);
+              // draw the location
+              ctx.fillStyle = "rgba(256, 0, 0, 0.5)";
+              ctx.beginPath();
+              ctx.arc(locationX, locationY, 5, 0, 2*Math.PI);
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = "rgba(256, 0, 0, 1)";
+              ctx.fill();
+              ctx.stroke();
+          };
+
+          map.src = './imgs/350x513_melbourne_outbound.jpg';
+        }
+      }
+      const LoadMap = () => {
+        const mapNum = getParameterByName('map');
+        switch (Number(mapNum)) {
+          case 1:
+            drawMap1();
+            break;
+          case 2:
+            drawMap2();
+            break;
+          case 3:
+            drawMap2(167, 176);
+            break;
+          default:
+            drawMap1();
+        }
+      }
+      LoadMap();
+    </script>
+  </body>
+</html>
